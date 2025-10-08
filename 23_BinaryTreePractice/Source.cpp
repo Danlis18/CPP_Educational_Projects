@@ -45,6 +45,10 @@ public:
 		cout << "Mumber of seats: ";
 		cin >> number_of_seats;
 	}
+
+	string get_number() {
+		return number;
+	}
 };
 
 
@@ -69,12 +73,12 @@ public:
 
 	void insert(bus data) {
 		element* node = new element;
-		
+		node->data = data;
 		element* ptr = nullptr, * tmp = root;
 
 		while (tmp) { 
 			ptr = tmp;
-			if (node->data.get_number() < tmp->key)
+			if (node->data.get_number() < tmp->data.get_number())
 				tmp = tmp->right;
 			else
 				tmp = tmp->right;
