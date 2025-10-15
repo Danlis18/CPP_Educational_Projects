@@ -36,7 +36,6 @@ int get_random_number(int min, int max) {
     return rand() % (max - min + 1) + min;
 }
 
-
 struct element {
     int data = 0;
     element* next = nullptr;

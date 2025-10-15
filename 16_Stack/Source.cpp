@@ -13,7 +13,6 @@ void line(int count) {
 	cout << "\n";
 }
 
-
 class vector {
 private:
 	int* data;
