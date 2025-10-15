@@ -4,6 +4,27 @@
 using namespace std;
 
 
+int menu() {
+	cout << "0 - Stop program \n";
+	cout << "1 - Add new bus \n";
+	cout << "2 - Search by bus number\n";
+	cout << "3 - Display all buses\n";
+
+	int choice;
+	cout << endl << "Enter your choice: ";
+	(cin >> choice).get();
+	return choice;
+}
+
+void line(int count) {
+	cout << "\n";
+	for (int i = 0; i < count; i++)
+		cout << "-";
+	cout << "\n";
+}
+
+
+
 class bus {
 	string number;
 	string name;
@@ -20,12 +41,12 @@ public:
 		number_of_seats = 0;
 	}
 
-	bus(string n, string na, string s, string r, int nos) {
-		number = n;
-		name = na;
-		surname = s;
-		route = r;
-		number_of_seats = nos;
+	bus(string number, string name, string surname, string route, int number_of_seats) {
+		this->number = number;
+		this->name = name;
+		this->surname = surname;
+		this->route = route;
+		this->number_of_seats = number_of_seats;
 	}
 
 	void set() {
@@ -41,8 +62,10 @@ public:
 		cin >> number_of_seats;
 	}
 
-	void print_num()const {
-		cout << "Number: " << number << endl;
+	void print() const {
+		cout << "Number: " << number << "\nName: " << name
+			<< "\nSurname: " << surname << "\nRoute: " << route
+			<< "\nSeats: " << number_of_seats << "\n";
 	}
 
 	string get_number() {
@@ -122,24 +145,27 @@ public:
 	}
 
 
-	/*element* search(element* node, int key) {
-		while (node && node->data.get_number() != key) {
-			if (key < node->data.get_number())
-				node = node->left;
+	element* search(const string& key) {
+		element* current = root;
+		while (current && current->data.get_number() != key) {
+			if (key < current->data.get_number())
+				current = current->left;
 			else
-				node = node->right;
+				current = current->right;
 		}
-		return node;
-	}*/
+		return current;
+	}
 
 
-	void print(element* node) const {
+	void print_all(element* node) const {
 		if (node) {
-			print(node->left);
-			node->data.print_num();
-			print(node->right);
+			print_all(node->left);
+			node->data.print();
+			line(30);
+			print_all(node->right);
 		}
 	}
+
 
 
 	element* get_root() const {
@@ -150,15 +176,60 @@ public:
 
 
 int main() {
-	srand(time(0));
-
-
-	bus busOne("AS32", "Danylo", "Lisnichuk", "Route233", 321); //передаю елементи для баса (треба дописати конструктор для заповнення данних в класі bus).
+	setlocale(LC_CTYPE, "ukr");
 
 	tree t;
-	t.insert(busOne);
-	t.print(t.get_root());
-	
+
+	int finish = 0;
+
+	do {
+		system("cls");
+		cout << "-- Bus System Menu --";
+		line(50);
+
+		int choice = menu();
+		if (choice == 0) break;
+
+		switch (choice) {
+		case 1: {
+			bus b;
+			b.set();
+			t.insert(b);
+			cout << "Bus added successfully!\n";
+			Sleep(1500);
+			break;
+		}
+		case 2: {
+			string number;
+			cout << "Enter bus number to search: ";
+			cin >> number;
+			element* found = t.search(number);
+			if (found) {
+				cout << "Bus found:\n";
+				found->data.print();
+			}
+			else {
+				cout << "Bus with number " << number << " not found.\n";
+			}
+			system("pause");
+			break;
+		}
+		case 3:
+			cout << "All buses:\n";
+			line(30);
+			t.print_all(t.get_root());
+			system("pause");
+			break;
+		default:
+			cout << "Incorrect input!";
+			Sleep(1500);
+			break;
+		}
+
+	} while (!finish);
+
+	system("cls");
+	cout << "Program terminated. Bye!\n";
 
 	return 0;
 }
