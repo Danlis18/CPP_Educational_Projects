@@ -24,6 +24,7 @@ int menu() {
     cout << "4 - Delete Last\n";
     cout << "5 - Clear All\n";
     cout << "6 - Add element to position\n";
+	cout << "7 - Delete element from position\n";
 
     int choice;
     cout << "Enter your choice: ";
@@ -152,6 +153,32 @@ public:
         }
     }
 
+    void dell_pos(int pos) {
+        if (size == 0) return;
+
+        if (pos == 0) {
+            element* tmp = head;
+            head = head->next;
+            delete tmp;
+        }
+        else {
+            element* tmp = head;
+            int i = 0;
+            while (i++ < pos - 1 && tmp->next != nullptr)
+                tmp = tmp->next;
+
+            if (tmp->next != nullptr) {
+                element* to_delete = tmp->next;
+                tmp->next = tmp->next->next;
+                delete to_delete;
+            }
+            else {
+                return;
+            }
+        }
+
+        size--;
+    }
 
 
     void print() const {
@@ -220,6 +247,11 @@ int main() {
             cout << "Enter pos: ";
             cin >> pos;
             l.add_pos(number, pos);
+            break;
+        case 7:
+            cout << "Enter pos: ";
+            cin >> pos;
+            l.dell_pos(pos);
             break;
         default:
             cout << "Incorrect input";

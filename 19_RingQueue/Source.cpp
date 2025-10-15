@@ -434,8 +434,6 @@ int main() {
     setlocale(LC_CTYPE, "ukr");
 
     ringQueue r1, r2, r3;
-    vector<ringQueue> rings;
-    // в циклі заповнюю усі 3 барабани 
 
     r1.push(1);
     r1.push(3);
@@ -477,7 +475,7 @@ int main() {
                 win();
             }
             else {
-                cout << endl  << "Не пощастило, спробуйте ще раз!" << endl;
+                cout << endl << "Не пощастило, спробуйте ще раз!" << endl;
             }
 
             break;

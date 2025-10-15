@@ -1,18 +1,15 @@
 #include <iostream>
 using namespace std;
 
-// Двозв'язний список - це ДСД, в якому об'єкти складаються із елементів,
-// що містять певну інформацію і два вказівники (один на попередній елемент, а інший на наступний).
-
 int menu() {
-
     cout << "\n\n0 - Exit\n";
     cout << "1 - Add Head\n";
     cout << "2 - Add Tail\n";
     cout << "3 - Delete Head\n";
-    cout << "4 - Delete Last\n";
+    cout << "4 - Delete Tail\n";
     cout << "5 - Clear All\n";
     cout << "6 - Add element to position\n";
+    cout << "7 - Delete element from position\n";
 
     int choice;
     cout << "Enter your choice: ";
@@ -26,7 +23,8 @@ int get_random_number(int min, int max) {
 
 struct element {
     int data = 0;
-    element* next = nullptr, * prev = nullptr;
+    element* next = nullptr;
+    element* prev = nullptr;
 };
 
 class list {
@@ -39,8 +37,11 @@ public:
         size = 0;
     }
 
-    void add_head(int value) {
+    ~list() {
+        clear();
+    }
 
+    void add_head(int value) {
         element* new_element = new element;
         new_element->data = value;
 
@@ -51,7 +52,6 @@ public:
             new_element->next = head;
             head->prev = new_element;
             head = new_element;
-            new_element = nullptr;
         }
         size++;
     }
@@ -65,61 +65,91 @@ public:
         }
         else {
             tail->next = new_element;
-            head->prev = tail;
+            new_element->prev = tail;
             tail = new_element;
-            new_element = nullptr;
         }
         size++;
     }
 
     void delete_head() {
+        if (size == 0) return;
 
         element* tmp = head;
-
-        if (size == 0) {
-            return;
-        }
-        else {
-            head = head->next;
-            delete tmp;
-            if(size != 1) head->prev = nullptr;
-        }
+        head = head->next;
+        if (head) head->prev = nullptr;
+        else tail = nullptr; // якщо був лише один елемент
+        delete tmp;
         size--;
     }
 
     void delete_tail() {
+        if (size == 0) return;
+
         element* tmp = tail;
-
-        if (size == 0) {
-            return;
-        }
-
-        else if (size == 1) {
-            delete tmp;
-            tmp = nullptr;
-            tail->prev = nullptr;
-            tmp->next = nullptr;
-        }
-
-        else {     
-            tmp = tail->prev; 
-            tmp->next = nullptr;
-        }
+        tail = tail->prev;
+        if (tail) tail->next = nullptr;
+        else head = nullptr; // якщо був лише один елемент
+        delete tmp;
         size--;
     }
 
+    void clear() {
+        while (size > 0) {
+            delete_head();
+        }
+    }
+
+    void add_pos(int value, int pos) {
+        if (pos <= 0) add_head(value);
+        else if (pos >= size) add_tail(value);
+        else {
+            element* new_element = new element;
+            new_element->data = value;
+
+            element* tmp = head;
+            for (int i = 0; i < pos - 1; i++)
+                tmp = tmp->next;
+
+            new_element->next = tmp->next;
+            new_element->prev = tmp;
+            tmp->next->prev = new_element;
+            tmp->next = new_element;
+
+            size++;
+        }
+    }
+
+    void delete_pos(int pos) {
+        if (size == 0) return;
+        if (pos <= 0) {
+            delete_head();
+        }
+        else if (pos >= size - 1) {
+            delete_tail();
+        }
+        else {
+            element* tmp = head;
+            for (int i = 0; i < pos; i++)
+                tmp = tmp->next;
+
+            tmp->prev->next = tmp->next;
+            tmp->next->prev = tmp->prev;
+            delete tmp;
+            size--;
+        }
+    }
 
     void print() const {
         element* tmp = head;
-
         while (tmp) {
             cout << tmp->data << " ";
             tmp = tmp->next;
         }
+        cout << endl;
     }
 
-    void set(int size) {
-        for (int i = 0; i < size; i++)
+    void set(int s) {
+        for (int i = 0; i < s; i++)
             add_head(get_random_number(-50, 50));
     }
 };
@@ -127,22 +157,20 @@ public:
 int main() {
     srand(time(0));
 
-
-    int number;
-
     list l;
     l.set(10);
 
+    int number, pos;
 
     do {
         system("cls");
+        cout << "Current list: ";
         l.print();
-        int pos = 0;
-        int choice = menu();
-        if (!choice) break;
 
-        switch (choice)
-        {
+        int choice = menu();
+        if (choice == 0) break;
+
+        switch (choice) {
         case 1:
             cout << "Enter number: ";
             cin >> number;
@@ -153,33 +181,33 @@ int main() {
             cin >> number;
             l.add_tail(number);
             break;
-
-            case 3:
+        case 3:
             l.delete_head();
             break;
         case 4:
             l.delete_tail();
             break;
-        /*case 5:
+        case 5:
             l.clear();
             break;
         case 6:
             cout << "Enter number: ";
             cin >> number;
-            cout << "Enter pos: ";
+            cout << "Enter position: ";
             cin >> pos;
             l.add_pos(number, pos);
-            break;*/
+            break;
+        case 7:
+            cout << "Enter position to delete: ";
+            cin >> pos;
+            l.delete_pos(pos);
+            break;
         default:
-            cout << "Incorrect input";
+            cout << "Incorrect input!";
             break;
         }
+
     } while (true);
-
-
-
-
-
 
     return 0;
 }
