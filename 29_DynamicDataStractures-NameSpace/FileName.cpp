@@ -2,24 +2,9 @@
 using namespace std;
 
 namespace dynamicDataStractures {
+
 	namespace lists {
 		namespace singleLinkedList {
-			int menu() {
-
-				cout << "\n\n0 - Exit\n";
-				cout << "1 - Add Head\n";
-				cout << "2 - Add Tail\n";
-				cout << "3 - Delete Head\n";
-				cout << "4 - Delete Last\n";
-				cout << "5 - Clear All\n";
-				cout << "6 - Add element to position\n";
-				cout << "7 - Delete element from position\n";
-
-				int choice;
-				cout << "Enter your choice: ";
-				cin >> choice;
-				return choice;
-			}
 
 			int get_random_number(int min, int max) {
 				return rand() % (max - min + 1) + min;
@@ -192,7 +177,7 @@ namespace dynamicDataStractures {
 		}
 
 		namespace doublelinkedList {
-			
+
 
 			int get_random_number(int min, int max) {
 				return rand() % (max - min + 1) + min;
@@ -502,12 +487,15 @@ namespace dynamicDataStractures {
 					data[position] = change_number;
 				else {
 					cout << "Not found";
+
 				}
 			}
 
 			void change_element_by_position(int position, int change_number) {
 				data[position] = change_number;
 			}
+
+
 
 			void reverse_array() {
 				for (int i = 0; i < size / 2; i++) {
@@ -518,6 +506,7 @@ namespace dynamicDataStractures {
 			int get_max() {
 				if (size == 0) {
 					cout << "Array is empty\n";
+
 					return 0;
 				}
 				int max_val = data[0];
@@ -530,6 +519,7 @@ namespace dynamicDataStractures {
 			int get_min() {
 				if (size == 0) {
 					cout << "Array is empty\n";
+
 					return 0;
 				}
 				int min_val = data[0];
@@ -546,6 +536,7 @@ namespace dynamicDataStractures {
 			int get_element(int index) {
 				if (index < 0 || index >= size) {
 					cout << "Incorrect index!\n";
+
 					return 0;
 				}
 				return data[index];
@@ -584,6 +575,7 @@ namespace dynamicDataStractures {
 					return;
 				}
 				cout << "Max element: " << get_max() << endl;
+
 			}
 
 			void print_info_min() {
@@ -594,6 +586,7 @@ namespace dynamicDataStractures {
 					return;
 				}
 				cout << "Min element: " << get_min() << endl;
+
 			}
 
 			void print_info_size() {
@@ -604,6 +597,7 @@ namespace dynamicDataStractures {
 					return;
 				}
 				cout << "Size: " << size << endl;
+
 			}
 
 			void print_info_index() {
@@ -618,7 +612,10 @@ namespace dynamicDataStractures {
 
 				int value = get_element(index);
 				cout << "Element at index " << index << " is: " << value << endl;
+
 			}
+
+
 
 
 			vector operator=(const vector& other) {
@@ -639,7 +636,6 @@ namespace dynamicDataStractures {
 				return *this;
 			}
 
-
 			int& get_element_by_index(unsigned int index) {
 				if (index >= size)
 					throw exception("index out of range");
@@ -652,6 +648,12 @@ namespace dynamicDataStractures {
 					throw exception("index out of range");
 
 				return data[index];
+			}
+
+
+
+			bool is_empty() const {
+				return size == 0;
 			}
 
 
@@ -669,7 +671,6 @@ namespace dynamicDataStractures {
 			obj.set_random(10);
 			return is;
 		}
-
 
 		class stack {
 			vector data;
@@ -712,7 +713,6 @@ namespace dynamicDataStractures {
 
 
 		};
-
 	}
 
 	namespace queues {
@@ -1461,8 +1461,6 @@ namespace dynamicDataStractures {
 				return is;
 			}
 
-
-
 			class ringQueue {
 				vector data;
 			public:
@@ -1513,29 +1511,6 @@ namespace dynamicDataStractures {
 					data.delete_array();
 				}
 			};
-
-			void win() {
-				system("cls");
-				int card_num;
-				int time;
-				int cvv;
-				cout << "Щоб забрати грошi надiшлiть ваш номер кати, термiн дiї карти, cvv код" << endl;
-				cout << "Номер вашої карти: ";
-				cin >> card_num;
-				cout << "Термін дiї вашої карти: ";
-				cin >> time;
-				cout << "CVV: ";
-				cin >> cvv;
-			}
-
-			void displayMenu() {
-				cout << "===========================" << endl;
-				cout << "1. Почати спiн            " << endl;
-				cout << "2. Вийти з гри            " << endl;
-				cout << "===========================" << endl;
-				cout << "Виберiть опцiю: ";
-			}
-
 		}
 
 		namespace PriorityQueue {
@@ -1545,7 +1520,6 @@ namespace dynamicDataStractures {
 					cout << "-";
 				cout << "\n";
 			}
-
 
 			class priority_item {
 				int data;
@@ -1570,15 +1544,10 @@ namespace dynamicDataStractures {
 				}
 			};
 
-
 			ostream& operator<< (ostream& os, const priority_item& obj) {
 				obj.print();
 				return os;
 			}
-
-
-
-
 
 			class vector {
 			private:
@@ -1791,7 +1760,6 @@ namespace dynamicDataStractures {
 				return os;
 			}
 
-
 			class queue {
 				vector data;
 			public:
@@ -1942,8 +1910,6 @@ namespace dynamicDataStractures {
 				cout << "-";
 			cout << "\n";
 		}
-
-
 
 		class vector {
 		private:
@@ -2300,16 +2266,15 @@ int main() {
 	dynamicDataStractures::lists::singleLinkedList::list l1;
 	dynamicDataStractures::lists::doublelinkedList::list l2;
 
-
 	dynamicDataStractures::queues::queue::queue q1;
 	dynamicDataStractures::queues::RingQueue::ringQueue q2;
 	dynamicDataStractures::queues::PriorityQueue::queue q3;
 
 	dynamicDataStractures::stack::stack s;
-
+ 
 	dynamicDataStractures::binaryTree::tree Tree;
 
-	dynamicDataStractures::vector::vector v1;
+	dynamicDataStractures::vector::vector v;
 
 
 
