@@ -1,0 +1,4 @@
+book	книга
+notebook	зошит
+pen	ручка
+pencil	олівець

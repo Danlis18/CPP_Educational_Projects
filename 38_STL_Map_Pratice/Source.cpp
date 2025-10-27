@@ -1,63 +1,139 @@
 #include <iostream>
-#include <windows.h> 
+#include <windows.h>  // для Sleep()
 #include <string>
 #include <map>
-#include <windows.h> // Потрібно для SetConsoleCP та SetConsoleOutputCP
+#include <fstream>
+#include <limits>
+
 using namespace std;
 
+static string trim(const string& s) {
+    size_t b = s.find_first_not_of(" \t\r\n");
+    if (b == string::npos) return "";
+    size_t e = s.find_last_not_of(" \t\r\n");
+    return s.substr(b, e - b + 1);
+}
 
+static void loadDictionary(map<string, string>& dict, const string& filename) {
+    ifstream in(filename);
+    if (!in.is_open()) return;
+    string line;
+    while (getline(in, line)) {
+        line = trim(line);
+        if (line.empty()) continue;
+        size_t tabPos = line.find('\t');
+        string key = (tabPos == string::npos) ? line : line.substr(0, tabPos);
+        string val = (tabPos == string::npos) ? "" : line.substr(tabPos + 1);
+        dict[trim(key)] = trim(val);
+    }
+}
 
+static bool saveDictionary(const map<string, string>& dict, const string& filename) {
+    ofstream out(filename);
+    if (!out.is_open()) return false;
+    for (auto it = dict.begin(); it != dict.end(); ++it)
+        out << it->first << '\t' << it->second << '\n';
+    return true;
+}
 
 int main() {
-	SetConsoleOutputCP(1251);
-	SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    SetConsoleCP(1251);
 
+    const string filename = "dictionary.txt";
+    map<string, string> dictionary{
+        {"book", "книга"},
+        {"pen", "ручка"},
+        {"notebook", "зошит"},
+        {"pencil", "олівець"},
+    };
 
-	map<string, string> dictionary{
-		{"book", "книга"},
-		{"pen", "ручка"},
-		{"notebook", "зошит"},
-		{"pencil", "олівець"},
-	};
+    loadDictionary(dictionary, filename);
 
-	for (map<string, string>::iterator it = dictionary.begin(); it != dictionary.end(); it++) {
-		cout << it->first << " : " << it->second << endl;
-	}
+    while (true) {
+        system("cls");
+        cout << "=== СЛОВНИК ===\n"
+            << "1) Показати слова\n"
+            << "2) Пошук слова\n"
+            << "3) Додати слово\n"
+            << "4) Видалити слово\n"
+            << "5) Редагувати переклад\n"
+            << "6) Зберегти у файл\n"
+            << "0) Вихід\n"
+            << "Ваш вибір: ";
 
-	string search_key;
-	cout << "Введіть слово, яке шукаєте: ";
-	cin >> search_key;
-	dictionary.find(search_key);
-	auto it = dictionary.find(search_key);
-	cout << it->first << " : " << it->second << endl;
+        int choice;
+        if (!(cin >> choice)) {
+            cin.clear();
+            cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+            cout << endl << "Помилка вводу!";
+            Sleep(1000);
+            continue;
+        }
+        cin.ignore((numeric_limits<streamsize>::max)(), '\n');
 
-	//m.insert(p1); //додаємо елемент з ключиком 1 і значенням "One".
-	//m.insert(make_pair(2, "Two")); //додаємо елемент з ключиком 2 і значенням "Two".
-
-	//m.insert({ 5, "Wellcom" }); //доступаємося до елемента з ключикоам 5 і йому приствоється значення "Wellcom".
-	//m[4] = "Four"; //доступаємося до елемента з ключикоам 4 і йому приствоється значення "Four".
-
-	//for (map<int, string>::iterator it = m.begin(); it != m.end(); it++) {
-	//	cout << it->first << " : " << it->second << endl; //first - ключ, second - значення
-	//}
-
-	/*m.erase(5);*/ //видаляємо елемент з ключиком 5.
-
-	/*cout << endl;
-	for (map<int, string>::iterator it = m.begin(); it != m.end(); it++) {
-		cout << it->first << " : " << it->second << endl;
-	}*/
-
-
-	/*cout << m[4] << endl;
-	m.find(5);*/ //шукаємо елемент з ключиком 5.
-
-	/*auto it = m.find(5);*/ //шукаємо елемент з ключиком 2.
-	/*if (it != m.end())
-		cout << it->first << " : " << it->second << endl;
-	else
-		cout << "Not found!" << endl;*/
-
-
-	return 0;
+        switch (choice) {
+        case 0:
+            saveDictionary(dictionary, filename);
+            cout << endl << "Вихід...";
+            Sleep(1000);
+            return 0;
+        case 1:
+            for (auto& kv : dictionary) cout << endl << kv.first << " : " << kv.second << endl;
+            Sleep(2000);
+            break;
+        case 2: {
+            string key;
+            cout << "Введіть слово: ";
+            getline(cin, key);
+            auto it = dictionary.find(key);
+            if (it != dictionary.end()) cout << it->first << " = " << it->second << endl;
+            else cout << endl << "Не знайдено.\n";
+            Sleep(2000);
+            break;
+        }
+        case 3: {
+            string key, val;
+            cout << endl << "Нове слово: ";
+            getline(cin, key);
+            cout << "Переклад: ";
+            getline(cin, val);
+            dictionary[key] = val;
+            cout << "Додано!\n";
+            Sleep(1000);
+            break;
+        }
+        case 4: {
+            string key;
+            cout << endl << "Слово для видалення: ";
+            getline(cin, key);
+            dictionary.erase(key);
+            cout << "Готово!\n";
+            Sleep(1000);
+            break;
+        }
+        case 5: {
+            string key, val;
+            cout << endl << "Слово для редагування: ";
+            getline(cin, key);
+            if (dictionary.find(key) != dictionary.end()) {
+                cout << "Новий переклад: ";
+                getline(cin, val);
+                dictionary[key] = val;
+                cout << "Оновлено!\n";
+            }
+            else cout << endl << "Не знайдено.\n";
+            Sleep(1000);
+            break;
+        }
+        case 6:
+            saveDictionary(dictionary, filename);
+            cout << endl << "Збережено!\n";
+            Sleep(1500);
+            break;
+        default:
+            cout << endl << "Невірний вибір!\n";
+            Sleep(1000);
+        }
+    }
 }
