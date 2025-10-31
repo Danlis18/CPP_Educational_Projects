@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <string>
 #include <numeric>
+#include <iomanip>
 
 using namespace std;
 
@@ -234,6 +235,6 @@ int res = accumulate(
         return prev + current.get_salary();
         
     });
-    cout << res;
+    cout << fixed << setprecision(20) << res;
 
 }
